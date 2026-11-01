@@ -1,0 +1,135 @@
+<section class="page-width py-14 md:py-24">
+  <div class="grid gap-12 md:grid-cols-2 md:gap-20">
+    <div class="md:sticky md:top-28 md:self-start" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow mb-3">{% render 'tr', text: section.settings.eyebrow %}</p>
+      {%- endif -%}
+      <h2 class="text-4xl md:text-5xl">{% render 'tr', text: section.settings.heading %}</h2>
+      {%- if section.settings.text != blank -%}
+        <div class="rte mt-5 text-lg">{% render 'tr', text: section.settings.text %}</div>
+      {%- endif -%}
+
+      <div class="mt-8 aspect-[4/3] overflow-hidden rounded-3xl bg-soft">
+        {%- if section.settings.image != blank -%}
+          {{
+            section.settings.image
+            | image_url: width: 1200
+            | image_tag:
+              class: 'h-full w-full object-cover',
+              widths: '600, 900, 1200',
+              sizes: '(min-width: 768px) 50vw, 100vw',
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'h-full w-full' }}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <ol class="divide-y divide-ink/10 border-y border-ink/10">
+      {%- for block in section.blocks -%}
+        <li
+          class="group flex gap-5 py-8 md:gap-8"
+          style="--reveal-delay: {{ forloop.index0 | times: 100 }}ms"
+          data-reveal
+          {{ block.shopify_attributes }}
+        >
+          <span class="pt-1 font-heading text-sm text-ink/40 tabular-nums">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-3">
+              <h3 class="text-2xl md:text-3xl">{% render 'tr', text: block.settings.name %}</h3>
+              {%- if block.settings.amount != blank -%}
+                <span class="rounded-full bg-blush px-3 py-1 text-xs font-semibold text-pink">{{ block.settings.amount }}</span>
+              {%- endif -%}
+            </div>
+            <p class="mt-2 leading-relaxed text-ink/70">{% render 'tr', text: block.settings.text %}</p>
+          </div>
+          <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-soft text-accent transition duration-500 group-hover:rotate-12 group-hover:bg-accent group-hover:text-white">
+            {% render 'icon', name: block.settings.icon, class: 'size-6' %}
+          </span>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ingredients",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small text above heading",
+      "default": "What's inside"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ingredients that actually work"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Every formula is built around proven actives in the right concentration — no fillers, no fragrance, no guesswork.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Hyaluronic acid"
+        },
+        {
+          "type": "text",
+          "id": "amount",
+          "label": "Amount label",
+          "default": "2%"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Holds up to 1000x its weight in water for plump, bouncy skin."
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "droplet", "label": "Droplet" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "sparkle", "label": "Sparkle" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "flask", "label": "Flask" },
+            { "value": "heart", "label": "Heart" }
+          ],
+          "default": "droplet"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredients",
+      "blocks": [
+        { "type": "ingredient" },
+        { "type": "ingredient", "settings": { "name": "Niacinamide", "amount": "5%", "text": "Refines pores and evens out skin tone.", "icon": "sparkle" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

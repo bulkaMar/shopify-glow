@@ -1,0 +1,45 @@
+{%- assign featured_blog = section.settings.blog -%}
+
+{%- if featured_blog != blank and featured_blog.articles_count > 0 -%}
+  <section class="page-width py-14 md:py-20">
+    <div class="mb-10 flex items-end justify-between gap-4" data-reveal>
+      <h2 class="text-3xl md:text-4xl">{% render 'tr', text: section.settings.heading %}</h2>
+      <a href="{{ featured_blog.url }}" class="inline-flex items-center gap-1 text-sm font-semibold text-accent">
+        {{- 'general.view_all' | t }}
+        {% render 'icon', name: 'arrow', class: 'size-4' -%}
+      </a>
+    </div>
+
+    <div class="grid gap-10 md:grid-cols-3 md:gap-6">
+      {%- for article in featured_blog.articles limit: 3 -%}
+        <div style="--reveal-delay: {{ forloop.index0 | modulo: 4 | times: 100 }}ms" data-reveal>
+          {% render 'article-card', article: article %}
+        </div>
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Skincare journal"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog posts"
+    }
+  ]
+}
+{% endschema %}

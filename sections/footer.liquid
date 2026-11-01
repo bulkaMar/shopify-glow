@@ -1,0 +1,109 @@
+<footer class="mt-auto bg-soft/60">
+  <div class="page-width grid gap-10 py-14 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <p>{% render 'logo', id: 'footer', class: 'text-3xl' %}</p>
+      <div class="rte mt-4 max-w-xs text-sm">{% render 'tr', text: section.settings.about %}</div>
+
+      <div class="mt-6 flex gap-3">
+        {%- if settings.social_instagram_link != blank -%}
+          <a href="{{ settings.social_instagram_link }}" class="rounded-full bg-paper p-2.5 hover:text-accent" aria-label="Instagram">
+            {% render 'icon', name: 'instagram' %}
+          </a>
+        {%- endif -%}
+        {%- if settings.social_tiktok_link != blank -%}
+          <a href="{{ settings.social_tiktok_link }}" class="rounded-full bg-paper p-2.5 hover:text-accent" aria-label="TikTok">
+            {% render 'icon', name: 'tiktok' %}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- for i in (1..2) -%}
+      {%- assign menu_key = 'menu_' | append: i -%}
+      {%- assign menu = section.settings[menu_key] -%}
+      <div class="md:col-span-2">
+        {%- if menu != blank -%}
+          {%- assign heading_key = 'menu_' | append: i | append: '_heading' -%}
+          {%- assign menu_heading = section.settings[heading_key] | default: menu.title -%}
+          <p class="mb-4 text-sm font-semibold">{% render 'tr', text: menu_heading %}</p>
+          <ul class="flex flex-col gap-2.5 text-sm text-ink/70">
+            {%- for link in menu.links -%}
+              <li><a href="{{ link.url }}" class="hover:text-accent">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+
+    <div class="md:col-span-4">
+      <p class="mb-2 text-sm font-semibold">{% render 'tr', text: section.settings.newsletter_heading %}</p>
+      <p class="mb-4 text-sm text-ink/70">{% render 'tr', text: section.settings.newsletter_text %}</p>
+      {% render 'newsletter-form', form_id: 'NewsletterFooter' %}
+    </div>
+  </div>
+
+  <div class="page-width flex flex-col items-center justify-between gap-4 border-t border-ink/10 py-6 text-xs text-ink/60 md:flex-row">
+    <p>© 2024 {{ shop.name }}</p>
+    {% render 'language-switcher', up: true %}
+    <ul class="flex flex-wrap gap-2" aria-label="{{ 'general.payment_methods' | t }}">
+      {%- for type in shop.enabled_payment_types -%}
+        <li>{{ type | payment_type_svg_tag: class: 'h-6 w-auto' }}</li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "enabled_on": {
+    "groups": [
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "about",
+      "label": "About text",
+      "default": "<p>Clean, gentle skincare made with ingredients your skin loves.</p>"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "First menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "menu_1_heading",
+      "label": "First menu heading",
+      "default": "Shop"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Second menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "menu_2_heading",
+      "label": "Second menu heading",
+      "default": "Help"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Join the glow club"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_text",
+      "label": "Newsletter text",
+      "default": "Skincare tips and 10% off your first order."
+    }
+  ]
+}
+{% endschema %}

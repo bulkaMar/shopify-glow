@@ -1,0 +1,15 @@
+<div class="page-width py-10 md:py-16">
+  <div class="mx-auto max-w-3xl">
+    <h1 class="text-center text-4xl md:text-5xl">{{ page.title }}</h1>
+    <div class="rte mt-10">{{ page.content }}</div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

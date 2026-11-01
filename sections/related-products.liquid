@@ -1,0 +1,49 @@
+<section
+  class="page-width py-14 md:py-20"
+  data-recommendations-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={% render 'tr', text: section.settings.products_to_show %}"
+>
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    <h2 class="mb-10 text-3xl md:text-4xl">{% render 'tr', text: section.settings.heading %}</h2>
+    <div class="grid {% if section.settings.mobile_columns == '2' %}grid-cols-2 gap-y-10{% else %}grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-y-10{% endif %} gap-x-4 md:gap-x-6 lg:grid-cols-4">
+      {%- for recommendation in recommendations.products -%}
+        {% render 'product-card', product: recommendation, show_quick_add: true %}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Related products",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Products per row on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    }
+  ]
+}
+{% endschema %}

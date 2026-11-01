@@ -1,0 +1,91 @@
+{%- liquid
+  assign remaining = settings.free_shipping_threshold | times: 100 | minus: cart.total_price
+  assign cart_product_ids = cart.items | map: 'product_id'
+
+  if recommendations.performed? and recommendations.products_count > 0
+    assign pool = recommendations.products
+  else
+    assign pool = collections.all.products
+  endif
+
+  assign shown = 0
+-%}
+
+<div data-cart-recommendations-result>
+  {%- capture items -%}
+    {%- for item in pool -%}
+      {%- if shown >= 6 -%}
+        {%- break -%}
+      {%- endif -%}
+      {%- if cart_product_ids contains item.id or item.available == false -%}
+        {%- continue -%}
+      {%- endif -%}
+      {%- assign shown = shown | plus: 1 -%}
+
+      <li class="flex w-64 shrink-0 snap-start items-center gap-3 rounded-2xl border border-ink/10 bg-paper p-2 pr-3 transition hover:border-ink/25">
+        <a href="{{ item.url }}" class="size-16 shrink-0 overflow-hidden rounded-xl bg-soft">
+          {%- if item.featured_media -%}
+            {{ item.featured_media | image_url: width: 160 | image_tag: class: 'h-full w-full object-cover', loading: 'lazy' }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'h-full w-full' }}
+          {%- endif -%}
+        </a>
+
+        <div class="min-w-0 flex-1">
+          {%- if settings.free_shipping_threshold > 0 and remaining > 0 and item.price >= remaining -%}
+            <span class="flex items-center gap-1 text-[11px] leading-tight font-semibold text-pink">
+              {% render 'icon', name: 'truck', class: 'size-3.5 shrink-0' %}
+              {{ 'cart.unlocks_shipping' | t }}
+            </span>
+          {%- endif -%}
+          <a href="{{ item.url }}" class="line-clamp-2 text-sm leading-snug font-medium hover:text-accent">{{ item.title }}</a>
+          <span class="text-sm text-ink/60">{{ item.price | money }}</span>
+        </div>
+
+        {%- if item.has_only_default_variant -%}
+          {%- form 'product', item, data-product-form: '' -%}
+            <input type="hidden" name="id" value="{{ item.selected_or_first_available_variant.id }}">
+            <button
+              type="submit"
+              class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-ink text-paper transition hover:bg-accent active:scale-90 aria-busy:opacity-50"
+              aria-label="{{ 'cart.add_item' | t: title: item.title | escape }}"
+            >
+              {% render 'icon', name: 'plus', class: 'size-4' %}
+            </button>
+          {%- endform -%}
+        {%- else -%}
+          <button
+            type="button"
+            class="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-ink text-paper transition hover:bg-accent active:scale-90 aria-busy:opacity-50"
+            data-quick-view="{{ item.url }}"
+            aria-label="{{ 'cart.add_item' | t: title: item.title | escape }}"
+          >
+            {% render 'icon', name: 'plus', class: 'size-4' %}
+          </button>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if shown > 0 -%}
+    <div class="py-4 sm:py-5">
+      <p class="mb-3 px-5 text-xs sm:px-6 font-semibold tracking-[0.15em] text-ink/50 uppercase">
+        {%- if cart.item_count > 0 -%}
+          {{ 'cart.recommendations' | t }}
+        {%- else -%}
+          {{ 'cart.bestsellers' | t }}
+        {%- endif -%}
+      </p>
+      <ul class="flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 sm:scroll-px-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {{ items }}
+      </ul>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart recommendations",
+  "settings": []
+}
+{% endschema %}

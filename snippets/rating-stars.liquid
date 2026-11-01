@@ -1,0 +1,18 @@
+{%- liquid
+  assign scale = max | default: 5
+  assign percent = rating | times: 100.0 | divided_by: scale
+  assign rounded_rating = rating | times: 1.0 | round: 1
+-%}
+
+{%- if rating -%}
+  <span class="inline-flex items-center gap-1.5 {{ class }}">
+    <span class="relative inline-block leading-none tracking-[0.15em]" aria-hidden="true">
+      <span class="text-ink/15">★★★★★</span>
+      <span class="absolute inset-0 overflow-hidden whitespace-nowrap text-pink" style="width: {{ percent }}%">★★★★★</span>
+    </span>
+    <span class="sr-only">{{ 'products.rating_label' | t: rating: rounded_rating, max: scale }}</span>
+    {%- if count -%}
+      <span class="text-ink/60">({{ count }})</span>
+    {%- endif -%}
+  </span>
+{%- endif -%}

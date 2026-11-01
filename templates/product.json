@@ -1,0 +1,147 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "tagline": {
+          "type": "tagline",
+          "settings": {
+            "text": ""
+          }
+        },
+        "skin_types": {
+          "type": "skin_types",
+          "settings": {
+            "dry": true,
+            "normal": true,
+            "oily": false,
+            "combination": false,
+            "sensitive": true
+          }
+        },
+        "benefit_1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "droplet",
+            "preset": "hydration"
+          }
+        },
+        "benefit_2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "leaf",
+            "preset": "vegan"
+          }
+        },
+        "benefit_3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "sparkle",
+            "preset": "glow"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_payment_button": false
+          }
+        },
+        "description": {
+          "type": "accordion",
+          "settings": {
+            "heading_preset": "description",
+            "source": "description",
+            "open": true
+          }
+        },
+        "ingredients": {
+          "type": "accordion",
+          "settings": {
+            "heading_preset": "ingredients",
+            "source": "ingredients"
+          }
+        },
+        "how_to_use": {
+          "type": "accordion",
+          "settings": {
+            "heading_preset": "how_to_use",
+            "source": "how_to_use"
+          }
+        }
+      },
+      "block_order": [
+        "tagline",
+        "skin_types",
+        "benefit_1",
+        "benefit_2",
+        "benefit_3",
+        "buy_buttons",
+        "description",
+        "ingredients",
+        "how_to_use"
+      ],
+      "settings": {}
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {}
+    },
+    "reviews": {
+      "type": "product-reviews",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "author": "Anna K.",
+            "rating": 5,
+            "title": "Holy grail serum",
+            "text": "I've tried so many serums but this one actually made a difference. My skin feels plump and hydrated all day.",
+            "skin_type": "Dry skin"
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "author": "Lena M.",
+            "rating": 5,
+            "title": "Gentle and effective",
+            "text": "Zero irritation on my sensitive skin. The texture is light and absorbs in seconds.",
+            "skin_type": "Sensitive skin"
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "author": "Claire D.",
+            "rating": 4,
+            "title": "Great results",
+            "text": "Visible glow after three weeks. I only wish the bottle was bigger!",
+            "skin_type": "Combination skin"
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "author": "Sofia R.",
+            "rating": 5,
+            "title": "My glow is back",
+            "text": "Friends keep asking what I changed in my routine. It's this!",
+            "skin_type": "Normal skin"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "reviews",
+    "related"
+  ]
+}

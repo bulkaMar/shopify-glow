@@ -1,0 +1,87 @@
+<section class="page-width py-14 md:py-20">
+  <div class="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+    <div data-reveal class="aspect-[4/5] overflow-hidden rounded-3xl bg-soft {% if section.settings.image_position == 'right' %}md:order-last{% endif %}">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag:
+            class: 'h-full w-full object-cover',
+            widths: '600, 900, 1200, 1400',
+            sizes: '(min-width: 768px) 50vw, 100vw',
+            loading: 'lazy'
+        }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'h-full w-full' }}
+      {%- endif -%}
+    </div>
+
+    <div class="max-w-lg" style="--reveal-delay: 150ms" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow mb-3">{% render 'tr', text: section.settings.eyebrow %}</p>
+      {%- endif -%}
+      <h2 class="text-3xl md:text-5xl">{% render 'tr', text: section.settings.heading %}</h2>
+      <div class="rte mt-5">{% render 'tr', text: section.settings.text %}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link }}" class="btn-outline mt-8">{% render 'tr', text: section.settings.button_label %}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small text above heading",
+      "default": "Our story"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Skincare that keeps it simple"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>We started Glow Skin because we were tired of 12-step routines. Every product is made with a few powerful ingredients that really work.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with text"
+    }
+  ]
+}
+{% endschema %}

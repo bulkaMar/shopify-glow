@@ -1,0 +1,181 @@
+{%- assign dialog_id = 'ReviewDialog-' | append: section.id -%}
+
+<section class="relative isolate overflow-hidden bg-blush/50 py-14 md:py-24">
+  <div class="blob pointer-events-none absolute -top-24 -left-24 -z-10 size-80 rounded-full bg-paper/60 blur-3xl"></div>
+
+  <div class="page-width">
+    <div class="mb-10 flex flex-col gap-8 md:mb-14 md:flex-row md:items-end md:justify-between" data-reveal>
+      <div class="max-w-xl">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow mb-3">{% render 'tr', text: section.settings.eyebrow %}</p>
+        {%- endif -%}
+        <h2 class="text-4xl md:text-5xl">{% render 'tr', text: section.settings.heading %}</h2>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-5 rounded-3xl bg-paper/80 p-4 pr-5 shadow-sm backdrop-blur md:p-5">
+        <p class="font-heading text-5xl leading-none">{% render 'tr', text: section.settings.rating %}</p>
+        <div>
+          {% render 'rating-stars', rating: section.settings.rating, class: 'text-lg' %}
+          <p class="mt-1 text-sm text-ink/60">{% render 'tr', text: section.settings.rating_text %}</p>
+        </div>
+        <button type="button" class="btn-outline px-5 py-2.5" data-dialog-open="{{ dialog_id }}">
+          {% render 'icon', name: 'plus', class: 'size-4' %}
+          {{ 'reviews.write' | t }}
+        </button>
+      </div>
+    </div>
+
+    <div class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign tint_index = forloop.index0 | modulo: 2
+          if tint_index == 0
+            assign avatar_tint = 'bg-soft text-accent'
+          else
+            assign avatar_tint = 'bg-blush text-pink'
+          endif
+        -%}
+        <div
+          class="w-[85%] shrink-0 snap-center sm:w-[60%] md:w-auto"
+          style="--reveal-delay: {{ forloop.index0 | modulo: 3 | times: 120 }}ms"
+          data-reveal
+          {{ block.shopify_attributes }}
+        >
+          <figure class="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-paper p-7 transition duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-ink/5 md:p-8">
+            <span class="pointer-events-none absolute -top-6 right-4 font-heading text-[9rem] leading-none text-blush transition duration-500 group-hover:-rotate-6 group-hover:text-pink/20" aria-hidden="true">”</span>
+
+            {% render 'rating-stars', rating: block.settings.rating, class: 'relative text-base' %}
+
+            <blockquote class="relative mt-5 flex-1 font-heading text-xl leading-snug">{% render 'tr', text: block.settings.quote %}</blockquote>
+
+            <figcaption class="relative mt-8 flex items-center gap-3 border-t border-ink/10 pt-5">
+              <span class="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold {{ avatar_tint }}">
+                {%- if block.settings.photo != blank -%}
+                  {{ block.settings.photo | image_url: width: 120 | image_tag: class: 'h-full w-full object-cover', loading: 'lazy' }}
+                {%- else -%}
+                  {{ block.settings.author | slice: 0 }}
+                {%- endif -%}
+              </span>
+              <span class="min-w-0 flex-1">
+                <span class="block text-sm font-semibold">{{ block.settings.author }}</span>
+                <span class="flex items-center gap-1 text-xs text-ink/50">
+                  {% render 'icon', name: 'check', class: 'size-3.5 text-accent' %}
+                  {{ 'products.verified_buyer' | t }}
+                </span>
+              </span>
+              {%- if block.settings.product != blank -%}
+                {%- if block.settings.product_link != blank -%}
+                  <a href="{{ block.settings.product_link }}" class="truncate rounded-full bg-soft px-3 py-1 text-xs transition hover:bg-accent hover:text-white">{% render 'tr', text: block.settings.product %}</a>
+                {%- else -%}
+                  <span class="truncate rounded-full bg-soft px-3 py-1 text-xs">{% render 'tr', text: block.settings.product %}</span>
+                {%- endif -%}
+              {%- endif -%}
+            </figcaption>
+          </figure>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% render 'review-dialog', dialog_id: dialog_id %}
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small text above heading",
+      "default": "Reviews"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Loved by 10,000+ customers"
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Average rating",
+      "min": 1,
+      "max": 5,
+      "step": 0.1,
+      "default": 4.9
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Rating text",
+      "default": "Based on 2,000+ reviews"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "My skin has never felt this soft. I use it every morning!"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Anna K."
+        },
+        {
+          "type": "text",
+          "id": "product",
+          "label": "Product name",
+          "default": "Hydra serum"
+        },
+        {
+          "type": "url",
+          "id": "product_link",
+          "label": "Product link"
+        },
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "Customer photo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": { "quote": "My skin has never felt this soft. I use it every morning!", "author": "Anna K.", "product": "Hydra serum" }
+        },
+        {
+          "type": "testimonial",
+          "settings": { "quote": "Finally a cleanser that doesn't irritate my sensitive skin.", "author": "Sofia M.", "product": "Gentle cleanser" }
+        },
+        {
+          "type": "testimonial",
+          "settings": { "quote": "The glow is real. My friends keep asking what I changed.", "author": "Olena P.", "product": "Vitamin C serum" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

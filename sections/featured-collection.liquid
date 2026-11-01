@@ -1,0 +1,92 @@
+{%- liquid
+  assign featured = section.settings.collection
+  if featured == blank and collections.all.products_count > 0
+    assign featured = collections.all
+  endif
+-%}
+
+<section class="page-width py-14 md:py-20">
+  <div class="mb-10 flex items-end justify-between gap-4" data-reveal>
+    <div>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow mb-2">{% render 'tr', text: section.settings.eyebrow %}</p>
+      {%- endif -%}
+      <h2 class="text-3xl md:text-4xl">{% render 'tr', text: section.settings.heading %}</h2>
+    </div>
+    {%- if featured != blank -%}
+      <a href="{{ featured.url }}" class="hidden items-center gap-1 text-sm font-semibold text-accent md:inline-flex">
+        {{- 'general.view_all' | t }}
+        {% render 'icon', name: 'arrow', class: 'size-4' -%}
+      </a>
+    {%- endif -%}
+  </div>
+
+  <div class="grid {% if section.settings.mobile_columns == '2' %}grid-cols-2 gap-y-10{% else %}grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-y-10{% endif %} gap-x-4 md:gap-x-6 lg:grid-cols-4">
+    {%- if featured != blank -%}
+      {%- for product in featured.products limit: section.settings.products_to_show -%}
+        <div style="--reveal-delay: {{ forloop.index0 | modulo: 4 | times: 100 }}ms" data-reveal>
+          {% render 'product-card', product: product, show_quick_add: true %}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..4) -%}
+        <div>
+          <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-soft">
+            {{ 'product-' | append: i | placeholder_svg_tag: 'h-full w-full' }}
+          </div>
+          <p class="mt-4 font-medium">{{ 'products.placeholder_title' | t }}</p>
+          <p class="text-sm">{{ 2900 | money }}</p>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small text above heading",
+      "default": "Customer favorites"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Bestsellers"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Products per row on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,107 @@
+<div data-predictive-results>
+  {%- if predictive_search.performed -%}
+    {%- liquid
+      assign products = predictive_search.resources.products
+      assign collections = predictive_search.resources.collections
+      assign pages = predictive_search.resources.pages
+      assign articles = predictive_search.resources.articles
+      assign links_count = collections.size | plus: pages.size | plus: articles.size
+    -%}
+
+    {%- if products.size > 0 or links_count > 0 -%}
+      <div class="grid gap-6 pt-5 md:grid-cols-[1fr_16rem] md:gap-12 md:pt-6">
+        {%- if products.size > 0 -%}
+          <div>
+            <p class="mb-3 text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">
+              {{- 'search.products' | t }} <span class="text-ink/30">({{ products.size }})</span>
+            </p>
+            <ul class="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+              {%- for product in products -%}
+                <li class="fade-up" style="animation-delay: {{ forloop.index0 | times: 50 }}ms">
+                  <a href="{{ product.url }}" class="group flex items-center gap-3 rounded-2xl p-2 transition hover:bg-soft">
+                    <span class="size-16 shrink-0 overflow-hidden rounded-xl bg-soft md:size-20">
+                      {%- if product.featured_media -%}
+                        {{ product.featured_media | image_url: width: 200 | image_tag: class: 'h-full w-full object-cover transition duration-500 group-hover:scale-105', loading: 'lazy' }}
+                      {%- else -%}
+                        {{ 'product-1' | placeholder_svg_tag: 'h-full w-full' }}
+                      {%- endif -%}
+                    </span>
+                    <span class="min-w-0 flex-1">
+                      {%- if product.type != blank -%}
+                        <span class="block text-[11px] font-semibold tracking-wider text-pink uppercase">{{ product.type }}</span>
+                      {%- endif -%}
+                      <span class="line-clamp-2 block text-sm leading-snug font-medium group-hover:text-accent" data-search-highlight>{{ product.title }}</span>
+                      <span class="mt-0.5 flex items-center gap-2">
+                        {% render 'price', product: product, class: 'text-sm text-ink/60' %}
+                        {%- if product.available == false -%}
+                          <span class="text-[11px] font-semibold text-ink/50">· {{ 'products.sold_out' | t }}</span>
+                        {%- endif -%}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if links_count > 0 -%}
+          <div>
+            <p class="mb-3 text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">{{ 'search.suggestions' | t }}</p>
+            <ul class="flex flex-col gap-1">
+              {%- for item in collections -%}
+                <li>
+                  <a href="{{ item.url }}" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition hover:bg-soft">
+                    {% render 'icon', name: 'bag', class: 'size-4 shrink-0 text-accent' %}
+                    <span class="flex-1" data-search-highlight>{{ item.title }}</span>
+                    {% render 'icon', name: 'arrow', class: 'size-4 opacity-0 transition group-hover:opacity-100' %}
+                  </a>
+                </li>
+              {%- endfor -%}
+              {%- for item in articles -%}
+                <li>
+                  <a href="{{ item.url }}" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition hover:bg-soft">
+                    {% render 'icon', name: 'sparkle', class: 'size-4 shrink-0 text-pink' %}
+                    <span class="flex-1" data-search-highlight>{{ item.title }}</span>
+                    {% render 'icon', name: 'arrow', class: 'size-4 opacity-0 transition group-hover:opacity-100' %}
+                  </a>
+                </li>
+              {%- endfor -%}
+              {%- for item in pages -%}
+                <li>
+                  <a href="{{ item.url }}" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition hover:bg-soft">
+                    {% render 'icon', name: 'arrow', class: 'size-4 shrink-0 text-ink/40' %}
+                    <span class="flex-1" data-search-highlight>{{ item.title }}</span>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <a
+        href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last"
+        class="btn-outline mt-6 w-full sm:w-auto"
+      >
+        {{- 'search.view_all' | t: terms: predictive_search.terms }}
+        {% render 'icon', name: 'arrow', class: 'size-4' %}
+      </a>
+    {%- else -%}
+      <div class="flex flex-col items-center py-12 text-center">
+        <span class="flex size-16 items-center justify-center rounded-full bg-blush text-pink">
+          {% render 'icon', name: 'search', class: 'size-7' %}
+        </span>
+        <p class="mt-5 font-heading text-xl">{{ 'search.no_results' | t: terms: predictive_search.terms }}</p>
+        <p class="mt-2 text-sm text-ink/60">{{ 'search.no_results_hint' | t }}</p>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Predictive search",
+  "settings": []
+}
+{% endschema %}

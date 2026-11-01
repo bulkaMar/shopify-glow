@@ -1,0 +1,123 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Glow Skin",
+    "theme_version": "1.0.0",
+    "theme_author": "Bulakh",
+    "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
+    "theme_support_url": "https://shopify.dev/docs/storefronts/themes"
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Logo width",
+        "min": 60,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "default": 140
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32 x 32px .png recommended"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#1b2a3a"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent (buttons, links)",
+        "default": "#2f7fb5"
+      },
+      {
+        "type": "color",
+        "id": "color_soft",
+        "label": "Soft blue background",
+        "default": "#eaf4fb"
+      },
+      {
+        "type": "color",
+        "id": "color_blush",
+        "label": "Soft pink background",
+        "default": "#fce8ee"
+      },
+      {
+        "type": "color",
+        "id": "color_pink",
+        "label": "Pink highlight (badges, labels)",
+        "default": "#d14d78"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Headings",
+        "default": "montserrat_n5"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body",
+        "default": "assistant_n4"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping from (store currency)",
+        "info": "Shows a progress bar in the cart. Set to 0 to hide it.",
+        "default": 50
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "placeholder": "https://instagram.com/glowskin"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok",
+        "placeholder": "https://tiktok.com/@glowskin"
+      }
+    ]
+  }
+]

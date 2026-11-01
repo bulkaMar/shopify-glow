@@ -1,0 +1,16 @@
+{
+  "name": "glow-skin-theme",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Custom Shopify theme for Glow Skin, a skincare store",
+  "scripts": {
+    "dev": "tailwindcss -i ./src/tailwind.css -o ./assets/tailwind.css --watch & shopify theme dev --store glowface-3005.myshopify.com --theme-editor-sync",
+    "tw:build": "tailwindcss -i ./src/tailwind.css -o ./assets/tailwind.css --minify",
+    "tw:watch": "tailwindcss -i ./src/tailwind.css -o ./assets/tailwind.css --watch",
+    "check": "shopify theme check"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.1.13",
+    "tailwindcss": "4.1.13"
+  }
+}

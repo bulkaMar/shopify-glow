@@ -1,0 +1,95 @@
+<dialog
+  class="m-0 max-h-dvh w-full max-w-none bg-transparent p-0 backdrop:bg-ink/40 backdrop:backdrop-blur-sm"
+  aria-label="{{ 'general.search' | t }}"
+  data-search-modal
+>
+  <div class="dropdown-panel max-h-dvh overflow-y-auto rounded-b-[2rem] bg-paper shadow-2xl shadow-ink/10">
+    <div class="page-width py-5 md:py-8">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="flex items-center gap-3" data-search-form>
+        <div class="relative flex-1">
+          {% render 'icon', name: 'search', class: 'pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-accent' %}
+          <input
+            type="search"
+            name="q"
+            class="input rounded-2xl border-ink/10 bg-soft/50 py-3.5 pr-12 pl-13 text-base md:py-4 md:pr-24 focus:bg-paper [&::-webkit-search-cancel-button]:hidden"
+            placeholder="{{ 'search.placeholder' | t }}"
+            autocomplete="off"
+            aria-label="{{ 'general.search' | t }}"
+            data-search-input
+          >
+          <span class="pointer-events-none absolute top-1/2 right-5 flex -translate-y-1/2 items-center gap-3">
+            <span class="hidden size-5 animate-spin rounded-full border-2 border-accent/20 border-t-accent" data-search-spinner></span>
+            <kbd class="hidden rounded-md border border-ink/15 bg-paper px-1.5 py-0.5 font-sans text-[11px] text-ink/50 md:inline">ESC</kbd>
+          </span>
+          <input type="hidden" name="options[prefix]" value="last">
+        </div>
+        <button
+          type="button"
+          class="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full transition hover:rotate-90 hover:bg-soft"
+          data-search-close
+          aria-label="{{ 'general.close' | t }}"
+        >
+          {% render 'icon', name: 'close', class: 'size-6' %}
+        </button>
+      </form>
+
+      <div class="pt-5 md:pt-6" data-search-empty>
+        <div class="grid gap-7 md:grid-cols-[16rem_1fr] md:gap-12">
+          <div class="flex flex-col gap-8">
+            <div hidden data-search-recent-wrapper>
+              <div class="mb-3 flex items-center justify-between">
+                <p class="text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">{{ 'search.recent' | t }}</p>
+                <button type="button" class="cursor-pointer text-xs text-ink/50 underline underline-offset-4 hover:text-pink" data-search-clear-recent>
+                  {{- 'search.clear' | t -}}
+                </button>
+              </div>
+              <ul class="flex flex-wrap gap-2" data-search-recent></ul>
+            </div>
+
+            <div>
+              <p class="mb-3 text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">{{ 'search.popular' | t }}</p>
+              <ul class="flex flex-wrap gap-2">
+                {%- assign popular_terms = 'search.popular_terms' | t | split: ',' -%}
+                {%- for term in popular_terms -%}
+                  <li>
+                    <button
+                      type="button"
+                      class="flex cursor-pointer items-center gap-1.5 rounded-full border border-ink/15 px-3.5 py-1.5 text-sm transition hover:border-accent hover:bg-accent hover:text-white"
+                      data-search-term="{{ term | strip | escape }}"
+                    >
+                      {% render 'icon', name: 'sparkle', class: 'size-3.5' %}
+                      {{ term | strip }}
+                    </button>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <p class="mb-3 text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">{{ 'search.trending' | t }}</p>
+            <ul class="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
+              {%- for item in collections.all.products limit: 4 -%}
+                <li class="w-32 shrink-0 snap-start md:w-auto">
+                  <a href="{{ item.url }}" class="group block">
+                    <span class="block aspect-square overflow-hidden rounded-xl bg-soft md:rounded-2xl">
+                      {%- if item.featured_media -%}
+                        {{ item.featured_media | image_url: width: 300 | image_tag: class: 'h-full w-full object-cover transition duration-500 group-hover:scale-105', loading: 'lazy' }}
+                      {%- else -%}
+                        {{ 'product-1' | placeholder_svg_tag: 'h-full w-full' }}
+                      {%- endif -%}
+                    </span>
+                    <span class="mt-2 block truncate text-sm font-medium group-hover:text-accent">{{ item.title }}</span>
+                    {% render 'price', product: item, class: 'text-sm text-ink/60' %}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div aria-live="polite" data-search-results hidden></div>
+    </div>
+  </div>
+</dialog>

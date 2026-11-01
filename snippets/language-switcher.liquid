@@ -1,0 +1,68 @@
+{%- liquid
+  if up
+    assign panel_position = 'bottom-full mb-2'
+  else
+    assign panel_position = 'top-full mt-2'
+  endif
+  if align_left
+    assign panel_position = panel_position | append: ' left-0'
+  else
+    assign panel_position = panel_position | append: ' right-0'
+  endif
+
+  assign summary_class = 'flex cursor-pointer list-none items-center gap-1 rounded-full px-2 py-1.5 sm:gap-1.5 sm:px-3 text-sm transition hover:bg-soft group-open/loc:bg-soft'
+  assign panel_class = 'dropdown-panel absolute z-40 min-w-44 rounded-2xl border border-ink/10 bg-paper p-1.5 shadow-lg shadow-ink/10 ' | append: panel_position
+  assign item_class = 'flex w-full items-center justify-between gap-6 rounded-xl px-3 py-2 text-left text-sm whitespace-nowrap transition hover:bg-soft'
+
+  if request.locale.primary
+    assign current_path = request.path
+  else
+    assign current_path = request.path | remove_first: request.locale.root_url
+  endif
+  if current_path == blank
+    assign current_path = '/'
+  endif
+-%}
+
+{%- if shop.published_locales.size > 1 -%}
+  <div class="flex flex-wrap items-center gap-1">
+    {%- if shop.published_locales.size > 1 -%}
+      <details class="group/loc relative" data-dropdown>
+        <summary class="{{ summary_class }}" aria-label="{{ 'localization.language' | t }}">
+          {% render 'icon', name: 'globe', class: 'size-4' %}
+          <span class="uppercase">{{ request.locale.iso_code | split: '-' | first }}</span>
+          {% render 'icon', name: 'chevron', class: 'size-3.5 transition group-open/loc:rotate-180' %}
+        </summary>
+        <ul class="{{ panel_class }}">
+          {%- for locale in shop.published_locales -%}
+            {%- liquid
+              if locale.primary
+                assign locale_url = current_path
+              elsif current_path == '/'
+                assign locale_url = locale.root_url
+              else
+                assign locale_url = locale.root_url | append: current_path
+              endif
+            -%}
+            <li>
+              <a
+                href="{{ locale_url }}"
+                hreflang="{{ locale.iso_code }}"
+                lang="{{ locale.iso_code }}"
+                class="{{ item_class }}{% if locale.iso_code == request.locale.iso_code %} font-semibold text-accent{% endif %}"
+                {% if locale.iso_code == request.locale.iso_code %}
+                  aria-current="true"
+                {% endif %}
+              >
+                {{ locale.endonym_name | capitalize }}
+                {%- if locale.iso_code == request.locale.iso_code -%}
+                  {% render 'icon', name: 'check', class: 'size-4' %}
+                {%- endif -%}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </details>
+    {%- endif -%}
+  </div>
+{%- endif -%}

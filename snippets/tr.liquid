@@ -1,0 +1,14 @@
+{%- liquid
+  if request.locale.primary or text == blank
+    echo text
+  else
+    assign tr_key = text | strip | md5 | prepend: 'content.t' | append: '_html'
+    assign tr_value = tr_key | t
+
+    if tr_value contains 'ranslation missing'
+      echo text
+    else
+      echo tr_value
+    endif
+  endif
+-%}

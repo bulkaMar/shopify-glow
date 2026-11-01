@@ -1,0 +1,32 @@
+{%- liquid
+  assign threshold = settings.free_shipping_threshold | times: 100
+  if threshold > 0
+    assign remaining = threshold | minus: cart.total_price
+    assign remaining_money = remaining | money
+    assign percent = cart.total_price | times: 100 | divided_by: threshold
+    if percent > 100
+      assign percent = 100
+    endif
+  endif
+-%}
+
+{%- if threshold > 0 and cart.item_count > 0 -%}
+  <div class="{{ class }}">
+    <p class="flex items-center gap-2 text-sm">
+      {%- if remaining > 0 -%}
+        {% render 'icon', name: 'truck', class: 'size-5 shrink-0 text-accent' %}
+        <span>{{ 'cart.free_shipping_remaining_html' | t: amount: remaining_money }}</span>
+      {%- else -%}
+        {% render 'icon', name: 'sparkle', class: 'size-5 shrink-0 text-pink' %}
+        <span class="font-medium">{{ 'cart.free_shipping_unlocked' | t }}</span>
+      {%- endif -%}
+    </p>
+    <div class="mt-3 h-2 overflow-hidden rounded-full bg-soft">
+      <div
+        class="h-full rounded-full transition-[width] duration-700 ease-out {% if remaining > 0 %}bg-accent{% else %}bg-pink{% endif %}"
+        style="width: {{ percent }}%"
+        data-shipping-bar
+      ></div>
+    </div>
+  </div>
+{%- endif -%}

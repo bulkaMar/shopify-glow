@@ -1,0 +1,167 @@
+<section class="relative isolate overflow-hidden bg-gradient-to-br from-soft via-paper to-blush/70">
+  <div class="blob pointer-events-none absolute -top-32 -left-24 -z-10 size-96 rounded-full bg-accent/15 blur-3xl"></div>
+  <div class="blob pointer-events-none absolute -right-24 -bottom-40 -z-10 size-[28rem] rounded-full bg-pink/15 blur-3xl [animation-delay:-6s]"></div>
+
+  <div class="page-width grid items-center gap-12 py-14 md:grid-cols-2 md:py-24">
+    <div class="max-w-xl">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-paper/80 px-4 py-1.5 text-xs font-semibold tracking-[0.15em] text-pink uppercase shadow-sm backdrop-blur">
+          {% render 'icon', name: 'sparkle', class: 'size-4' %}
+          {% render 'tr', text: section.settings.eyebrow %}
+        </p>
+      {%- endif -%}
+
+      <h1 class="fade-up text-5xl leading-[1.05] [animation-delay:100ms] md:text-7xl">{% render 'tr', text: section.settings.heading %}</h1>
+      <div class="rte fade-up mt-6 text-lg [animation-delay:200ms]">{% render 'tr', text: section.settings.text %}</div>
+
+      <div class="fade-up mt-8 flex flex-wrap gap-3 [animation-delay:300ms]">
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn group shadow-lg shadow-accent/25">
+            {%- render 'tr', text: section.settings.button_label %}
+            {% render 'icon', name: 'arrow', class: 'size-4 transition group-hover:translate-x-1' -%}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button_2_label != blank -%}
+          <a href="{{ section.settings.button_2_link }}" class="btn-outline">{% render 'tr', text: section.settings.button_2_label %}</a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.rating_text != blank -%}
+        <div class="fade-up mt-10 flex items-center gap-3 text-sm [animation-delay:400ms]">
+          {% render 'rating-stars', rating: 5, class: 'text-base' %}
+          <span class="text-ink/70">{% render 'tr', text: section.settings.rating_text %}</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="fade-up relative [animation-delay:200ms]">
+      <div class="aspect-[4/5] overflow-hidden rounded-t-full rounded-b-3xl bg-soft shadow-2xl shadow-accent/10 md:aspect-square md:rounded-t-[12rem]">
+        {%- if section.settings.image != blank -%}
+          {{
+            section.settings.image
+            | image_url: width: 1600
+            | image_tag:
+              class: 'h-full w-full object-cover',
+              widths: '600, 900, 1200, 1600',
+              sizes: '(min-width: 768px) 50vw, 100vw',
+              loading: 'eager',
+              fetchpriority: 'high'
+          }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'h-full w-full' }}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.stat_value != blank -%}
+        <div class="float absolute bottom-8 -left-2 flex max-w-60 items-center gap-3 rounded-2xl border border-ink/5 bg-paper/90 p-4 shadow-xl shadow-ink/10 backdrop-blur md:-left-10">
+          <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-soft text-accent">
+            {% render 'icon', name: 'droplet' %}
+          </span>
+          <div>
+            <p class="font-heading text-2xl leading-none">{{ section.settings.stat_value }}</p>
+            <p class="mt-1 text-xs leading-snug text-ink/60">{% render 'tr', text: section.settings.stat_text %}</p>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.badge_text != blank -%}
+        <div class="float absolute top-10 -right-2 flex items-center gap-2 rounded-full border border-ink/5 bg-paper/90 py-2 pr-4 pl-2 text-sm font-medium shadow-xl shadow-ink/10 backdrop-blur [animation-delay:-2.5s] md:-right-6">
+          <span class="flex size-8 items-center justify-center rounded-full bg-blush text-pink">
+            {% render 'icon', name: 'shield', class: 'size-4' %}
+          </span>
+          {% render 'tr', text: section.settings.badge_text %}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small text above heading",
+      "default": "New • Vitamin C serum"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your skin, but glowing"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Gentle, effective skincare made with clean ingredients. Dermatologist tested and loved by sensitive skin.</p>"
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Rating text",
+      "default": "4.9/5 from 2,000+ happy customers"
+    },
+    {
+      "type": "header",
+      "content": "Floating cards"
+    },
+    {
+      "type": "text",
+      "id": "stat_value",
+      "label": "Stat number",
+      "default": "98%"
+    },
+    {
+      "type": "text",
+      "id": "stat_text",
+      "label": "Stat text",
+      "default": "felt more hydrated in 2 weeks"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Dermatologist tested"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Second button label",
+      "default": "Our story"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Second button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

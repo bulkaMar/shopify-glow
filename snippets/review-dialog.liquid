@@ -1,0 +1,126 @@
+{%- assign form_id = dialog_id | append: '-form' -%}
+
+<dialog
+  id="{{ dialog_id }}"
+  class="dialog-sheet mx-0 mt-auto mb-0 max-h-[92dvh] w-full max-w-full overflow-y-auto rounded-t-3xl bg-paper p-0 text-ink backdrop:bg-ink/40 backdrop:backdrop-blur-sm sm:m-auto sm:max-h-[90dvh] sm:w-[min(34rem,calc(100%-2rem))] sm:rounded-3xl"
+  aria-labelledby="{{ dialog_id }}-title"
+>
+  {%- form 'contact', id: form_id, class: 'relative px-5 pt-3 sm:p-10' -%}
+    <span class="mx-auto mb-3 block h-1 w-10 rounded-full bg-ink/15 sm:hidden" aria-hidden="true"></span>
+
+    <button
+      type="button"
+      class="absolute top-3 right-3 sm:top-4 sm:right-4 flex size-10 cursor-pointer items-center justify-center rounded-full transition hover:rotate-90 hover:bg-soft"
+      data-dialog-close
+      aria-label="{{ 'general.close' | t }}"
+    >
+      {% render 'icon', name: 'close', class: 'size-5' %}
+    </button>
+
+    {%- if form.posted_successfully? -%}
+      <div class="pt-6 pb-8 text-center" data-review-posted>
+        <span class="mx-auto flex size-16 items-center justify-center rounded-full bg-blush text-pink">
+          {% render 'icon', name: 'heart', class: 'size-8' %}
+        </span>
+        <p id="{{ dialog_id }}-title" class="mt-6 font-heading text-2xl">{{ 'reviews.success_title' | t }}</p>
+        <p class="mt-2 text-ink/70">{{ 'reviews.success' | t }}</p>
+        <button type="button" class="btn mt-8" data-dialog-close>{{ 'general.close' | t }}</button>
+      </div>
+    {%- else -%}
+      <p class="eyebrow">{{ 'reviews.write' | t }}</p>
+      <h2 id="{{ dialog_id }}-title" class="mt-1.5 pr-10 text-2xl sm:mt-2 sm:text-3xl">{{ 'reviews.form_title' | t }}</h2>
+      <p class="mt-1.5 text-xs text-ink/60 sm:mt-2 sm:text-sm">{{ 'reviews.form_text' | t }}</p>
+
+      {%- if form.errors -%}
+        <div class="mt-4 rounded-2xl bg-blush p-4 text-sm sm:mt-6" role="alert" data-review-posted>
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <input type="hidden" name="contact[Type]" value="Product review">
+
+      <fieldset class="mt-4 sm:mt-6">
+        <legend class="mb-1.5 text-sm font-medium sm:mb-2">{{ 'reviews.rating' | t }}</legend>
+        <div class="star-input">
+          {%- for i in (1..5) reversed -%}
+            <input
+              type="radio"
+              id="{{ dialog_id }}-star-{{ i }}"
+              name="contact[Rating]"
+              value="{{ i }}/5"
+              required
+              {% if i == 5 %}
+                checked
+              {% endif %}
+            >
+            <label for="{{ dialog_id }}-star-{{ i }}" title="{{ i }}/5">★</label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+
+      <div class="mt-4 grid gap-3 sm:mt-5 sm:grid-cols-2 sm:gap-4">
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium sm:mb-1.5">{{ 'reviews.name' | t }}</span>
+          <input type="text" name="contact[name]" class="input rounded-xl py-2.5 sm:py-3" autocomplete="name" required>
+        </label>
+        <label class="block">
+          <span class="mb-1 block text-sm font-medium sm:mb-1.5">{{ 'reviews.email' | t }}</span>
+          <input type="email" name="contact[email]" class="input rounded-xl py-2.5 sm:py-3" autocomplete="email" required>
+        </label>
+      </div>
+
+      {%- if product -%}
+        <input type="hidden" name="contact[Product]" value="{{ product.title | escape }}">
+      {%- else -%}
+        <div class="mt-3 sm:mt-4">
+          <p class="mb-1 text-sm font-medium sm:mb-1.5">{{ 'reviews.product' | t }}</p>
+          {%- assign first_product = collections.all.products.first -%}
+          <details class="group/select relative" data-dropdown>
+            <summary class="input flex cursor-pointer list-none items-center gap-3 rounded-xl py-2 pl-2 transition group-open/select:border-accent group-open/select:ring-2 group-open/select:ring-accent/20">
+              <span class="size-9 shrink-0 overflow-hidden rounded-lg bg-soft" data-select-image>
+                {%- if first_product.featured_media -%}
+                  {{ first_product.featured_media | image_url: width: 80 | image_tag: class: 'h-full w-full object-cover' }}
+                {%- endif -%}
+              </span>
+              <span class="flex-1 truncate" data-select-label>{{ first_product.title }}</span>
+              {% render 'icon', name: 'chevron', class: 'size-4 shrink-0 transition duration-300 group-open/select:rotate-180' %}
+            </summary>
+
+            <div class="dropdown-panel absolute inset-x-0 top-full z-10 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-ink/10 bg-paper p-1.5 shadow-xl shadow-ink/10">
+              {%- for item in collections.all.products limit: 50 -%}
+                <label class="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-2 text-sm transition hover:bg-soft has-checked:bg-soft has-checked:font-semibold">
+                  <input
+                    type="radio"
+                    name="contact[Product]"
+                    value="{{ item.title | escape }}"
+                    class="peer sr-only"
+                    data-select-option
+                    {% if forloop.first %}
+                      checked
+                    {% endif %}
+                  >
+                  <span class="size-10 shrink-0 overflow-hidden rounded-lg bg-soft" data-option-image>
+                    {%- if item.featured_media -%}
+                      {{ item.featured_media | image_url: width: 80 | image_tag: class: 'h-full w-full object-cover', loading: 'lazy' }}
+                    {%- endif -%}
+                  </span>
+                  <span class="flex-1">{{ item.title }}</span>
+                  {% render 'icon', name: 'check', class: 'size-4 text-accent opacity-0 transition peer-checked:opacity-100' %}
+                </label>
+              {%- endfor -%}
+            </div>
+          </details>
+        </div>
+      {%- endif -%}
+
+      <label class="mt-3 block sm:mt-4">
+        <span class="mb-1 block text-sm font-medium sm:mb-1.5">{{ 'reviews.review' | t }}</span>
+        <textarea name="contact[body]" rows="3" class="input resize-y rounded-2xl py-2.5 sm:py-3" required></textarea>
+      </label>
+
+      <div class="sticky bottom-0 -mx-5 mt-4 border-t border-ink/10 bg-paper/95 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur sm:static sm:mx-0 sm:mt-6 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+        <button type="submit" class="btn w-full">{{ 'reviews.submit' | t }}</button>
+      </div>
+    {%- endif -%}
+  {%- endform -%}
+</dialog>

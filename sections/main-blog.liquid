@@ -1,0 +1,105 @@
+{%- paginate blog.articles by 10 -%}
+  <section class="relative isolate overflow-hidden bg-gradient-to-b from-soft to-paper pt-14 pb-10 md:pt-20">
+    <div class="blob pointer-events-none absolute -top-24 -right-24 -z-10 size-96 rounded-full bg-blush/70 blur-3xl"></div>
+
+    <div class="page-width text-center">
+      <p class="eyebrow fade-up">{{ 'blog.eyebrow' | t }}</p>
+      <h1 class="fade-up mt-3 text-5xl [animation-delay:100ms] md:text-6xl">{{ blog.title }}</h1>
+      <p class="fade-up mx-auto mt-4 max-w-xl text-lg text-ink/70 [animation-delay:200ms]">{{ 'blog.subtitle' | t }}</p>
+
+      {%- if blog.all_tags.size > 0 -%}
+        <nav class="fade-up mt-8 flex flex-wrap justify-center gap-2 [animation-delay:300ms]" aria-label="{{ 'blog.topics' | t }}">
+          <a
+            href="{{ blog.url }}"
+            class="rounded-full border px-4 py-2 text-sm transition {% if current_tags == blank %}border-ink bg-ink text-paper{% else %}border-ink/15 bg-paper/70 hover:border-ink{% endif %}"
+            {% if current_tags == blank %}
+              aria-current="page"
+            {% endif %}
+          >
+            {{- 'blog.all' | t -}}
+          </a>
+          {%- for tag in blog.all_tags -%}
+            {%- assign is_current = false -%}
+            {%- if current_tags contains tag -%}
+              {%- assign is_current = true -%}
+            {%- endif -%}
+            <a
+              href="{{ blog.url }}/tagged/{{ tag | handleize }}"
+              class="rounded-full border px-4 py-2 text-sm capitalize transition {% if is_current %}border-ink bg-ink text-paper{% else %}border-ink/15 bg-paper/70 hover:border-ink{% endif %}"
+              {% if is_current %}
+                aria-current="page"
+              {% endif %}
+            >
+              {{- tag -}}
+            </a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <div class="page-width pb-14 md:pb-20">
+    {%- assign show_featured = false -%}
+    {%- if paginate.current_page == 1 and current_tags == blank and blog.articles.size > 0 -%}
+      {%- assign show_featured = true -%}
+      {%- assign featured = blog.articles.first -%}
+      <article class="group mb-16 grid items-center gap-8 md:grid-cols-[3fr_2fr] md:gap-12" data-reveal>
+        <a href="{{ featured.url }}" class="block aspect-[4/3] overflow-hidden rounded-[2rem] bg-soft md:aspect-[16/11]">
+          {%- if featured.image -%}
+            {{
+              featured.image
+              | image_url: width: 1400
+              | image_tag:
+                class: 'h-full w-full object-cover transition duration-700 group-hover:scale-105',
+                widths: '600, 900, 1200, 1400',
+                sizes: '(min-width: 768px) 60vw, 100vw',
+                loading: 'eager'
+            }}
+          {%- else -%}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'h-full w-full' }}
+          {%- endif -%}
+        </a>
+        <div>
+          <p class="flex flex-wrap items-center gap-2 text-xs text-ink/50">
+            <span class="rounded-full bg-blush px-3 py-1 font-semibold text-pink">{{ 'blog.latest' | t }}</span>
+            {{ featured.published_at | time_tag: format: 'date' }}
+            <span aria-hidden="true">·</span>
+            {% render 'reading-time', article: featured %}
+          </p>
+          <h2 class="mt-4 text-3xl leading-tight md:text-4xl">
+            <a href="{{ featured.url }}" class="hover:text-accent">{{ featured.title }}</a>
+          </h2>
+          <p class="mt-4 leading-relaxed text-ink/70">{{ featured.excerpt_or_content | strip_html | truncatewords: 35 }}</p>
+          <a href="{{ featured.url }}" class="btn mt-8">
+            {{- 'blog.read_more' | t }}
+            {% render 'icon', name: 'arrow', class: 'size-4 transition group-hover:translate-x-1' -%}
+          </a>
+        </div>
+      </article>
+    {%- endif -%}
+
+    <div class="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+      {%- for article in blog.articles -%}
+        {%- if show_featured and forloop.first -%}
+          {%- continue -%}
+        {%- endif -%}
+        <div style="--reveal-delay: {{ forloop.index0 | modulo: 3 | times: 100 }}ms" data-reveal>
+          {% render 'article-card', article: article %}
+        </div>
+      {%- else -%}
+        <p class="col-span-full py-20 text-center text-ink/60">{{ 'blog.empty' | t }}</p>
+      {%- endfor -%}
+    </div>
+
+    {% render 'pagination', paginate: paginate %}
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog",
+  "enabled_on": {
+    "templates": ["blog"]
+  }
+}
+{% endschema %}

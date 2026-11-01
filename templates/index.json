@@ -1,0 +1,262 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "image": "shopify://shop_images/1.jpg",
+        "eyebrow": "New • Vitamin C serum",
+        "heading": "Your skin, but glowing",
+        "text": "<p>Gentle, effective skincare made with clean ingredients. Dermatologist tested and loved by sensitive skin.</p>",
+        "rating_text": "4.9/5 from 2,000+ happy customers",
+        "stat_value": "98%",
+        "stat_text": "felt more hydrated in 2 weeks",
+        "badge_text": "Dermatologist tested",
+        "button_label": "Shop now",
+        "button_link": "",
+        "button_2_label": ""
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": {
+          "type": "text",
+          "settings": {
+            "text": "Clean ingredients"
+          }
+        },
+        "m2": {
+          "type": "text",
+          "settings": {
+            "text": "Vegan formulas"
+          }
+        },
+        "m3": {
+          "type": "text",
+          "settings": {
+            "text": "Cruelty-free"
+          }
+        },
+        "m4": {
+          "type": "text",
+          "settings": {
+            "text": "Dermatologist tested"
+          }
+        },
+        "m5": {
+          "type": "text",
+          "settings": {
+            "text": "Made in Europe"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4",
+        "m5"
+      ],
+      "settings": {
+        "background": "soft",
+        "speed": 40
+      }
+    },
+    "benefits": {
+      "type": "benefits",
+      "blocks": {
+        "clean": {
+          "type": "benefit",
+          "settings": {
+            "icon": "leaf",
+            "title": "Clean ingredients",
+            "text": "No parabens, sulfates or fragrance"
+          }
+        },
+        "cruelty_free": {
+          "type": "benefit",
+          "settings": {
+            "icon": "rabbit",
+            "title": "Cruelty-free",
+            "text": "Never tested on animals"
+          }
+        },
+        "tested": {
+          "type": "benefit",
+          "settings": {
+            "icon": "flask",
+            "title": "Dermatologist tested",
+            "text": "Safe for sensitive skin"
+          }
+        },
+        "recyclable": {
+          "type": "benefit",
+          "settings": {
+            "icon": "recycle",
+            "title": "Recyclable packaging",
+            "text": "Glass bottles and paper boxes"
+          }
+        }
+      },
+      "block_order": [
+        "clean",
+        "cruelty_free",
+        "tested",
+        "recyclable"
+      ],
+      "settings": {
+        "heading": ""
+      }
+    },
+    "bestsellers": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Customer favorites",
+        "heading": "Bestsellers",
+        "collection": "",
+        "products_to_show": 4
+      }
+    },
+    "ingredients": {
+      "type": "ingredients",
+      "blocks": {
+        "i1": {
+          "type": "ingredient",
+          "settings": {
+            "name": "Hyaluronic acid",
+            "amount": "2%",
+            "text": "Holds up to 1000x its weight in water for plump, bouncy, hydrated skin.",
+            "icon": "droplet"
+          }
+        },
+        "i2": {
+          "type": "ingredient",
+          "settings": {
+            "name": "Niacinamide",
+            "amount": "5%",
+            "text": "Refines the look of pores, controls shine and evens out skin tone.",
+            "icon": "sparkle"
+          }
+        },
+        "i3": {
+          "type": "ingredient",
+          "settings": {
+            "name": "Vitamin C",
+            "amount": "15%",
+            "text": "Brightens dull skin, fades dark spots and protects from daily stress.",
+            "icon": "sun"
+          }
+        },
+        "i4": {
+          "type": "ingredient",
+          "settings": {
+            "name": "Ceramides",
+            "amount": "3x",
+            "text": "Restore and strengthen the skin barrier so moisture stays in.",
+            "icon": "shield"
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2",
+        "i3",
+        "i4"
+      ],
+      "settings": {
+        "eyebrow": "What's inside",
+        "heading": "Ingredients that actually work",
+        "text": "<p>Every formula is built around proven actives in the right concentration — no fillers, no fragrance, no guesswork.</p>",
+        "image": "shopify://shop_images/2.jpg"
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/3.jpg",
+        "image_position": "left",
+        "eyebrow": "Our story",
+        "heading": "Skincare that keeps it simple",
+        "text": "<p>We started Glow Skin because we were tired of 12-step routines. Every product is made with a few powerful ingredients that really work.</p>",
+        "button_label": ""
+      }
+    },
+    "before_after": {
+      "type": "before-after",
+      "settings": {
+        "eyebrow": "Real results",
+        "heading": "See the glow in 4 weeks",
+        "text": "<p>Drag the slider to compare. Results after 28 days of using Hydra Glow Serum twice a day.</p>",
+        "image_before": "shopify://shop_images/4.jpg",
+        "image_after": "shopify://shop_images/5.jpg",
+        "label_before": "Before",
+        "label_after": "After",
+        "button_label": "Shop the serum",
+        "button_link": ""
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "My skin has never felt this soft. I use it every morning!",
+            "author": "Anna K.",
+            "product": "Hydra serum"
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Finally a cleanser that doesn't irritate my sensitive skin.",
+            "author": "Sofia M.",
+            "product": "Gentle cleanser"
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The glow is real. My friends keep asking what I changed.",
+            "author": "Olena P.",
+            "product": "Vitamin C serum"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {
+        "heading": "Loved by 10,000+ customers"
+      }
+    },
+    "journal": {
+      "type": "featured-blog",
+      "settings": {
+        "heading": "Skincare journal",
+        "blog": "news"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Get 10% off your first order",
+        "text": "Join our newsletter for skincare tips, new launches and exclusive offers."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "benefits",
+    "bestsellers",
+    "ingredients",
+    "story",
+    "before_after",
+    "testimonials",
+    "journal",
+    "newsletter"
+  ]
+}

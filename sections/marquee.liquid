@@ -1,0 +1,86 @@
+{%- liquid
+  case section.settings.background
+    when 'accent'
+      assign bg = 'bg-accent text-white'
+    when 'blush'
+      assign bg = 'bg-blush text-ink'
+    else
+      assign bg = 'bg-soft text-ink'
+  endcase
+-%}
+
+<section class="overflow-hidden {{ bg }} py-4 md:py-5">
+  <div class="marquee flex w-max" style="--marquee-duration: {% render 'tr', text: section.settings.speed %}s">
+    {%- for half in (1..2) -%}
+      <ul
+        class="flex shrink-0 items-center"
+        {% if half == 2 %}
+          aria-hidden="true"
+        {% endif %}
+      >
+        {%- for repeat in (1..3) -%}
+          {%- for block in section.blocks -%}
+            <li class="flex items-center gap-8 pr-8 font-heading text-lg whitespace-nowrap md:text-xl" {{ block.shopify_attributes }}>
+              {% render 'tr', text: block.settings.text %}
+              {% render 'icon', name: 'sparkle', class: 'size-5 opacity-70' %}
+            </li>
+          {%- endfor -%}
+        {%- endfor -%}
+      </ul>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "soft", "label": "Soft blue" },
+        { "value": "blush", "label": "Soft pink" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "soft"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Speed (seconds per loop)",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "s",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Clean ingredients"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "blocks": [
+        { "type": "text", "settings": { "text": "Clean ingredients" } },
+        { "type": "text", "settings": { "text": "Vegan" } },
+        { "type": "text", "settings": { "text": "Cruelty-free" } },
+        { "type": "text", "settings": { "text": "Dermatologist tested" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

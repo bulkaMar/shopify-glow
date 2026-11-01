@@ -1,0 +1,222 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+  {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+
+  <div class="page-width py-10 md:py-16">
+    <header class="mx-auto mb-10 max-w-2xl text-center">
+      <h1 class="text-4xl md:text-5xl">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="rte mt-4">{{ collection.description }}</div>
+      {%- endif -%}
+    </header>
+
+    <form class="relative flex flex-wrap items-center gap-2 border-b border-ink/10 pb-6" data-filter-form>
+      {%- for filter in collection.filters -%}
+        {%- liquid
+          assign active_count = filter.active_values.size
+          if filter.type == 'price_range'
+            if filter.min_value.value != null or filter.max_value.value != null
+              assign active_count = 1
+            endif
+          endif
+        -%}
+        <details class="group/filter md:relative" data-dropdown>
+          <summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition select-none hover:border-ink sm:gap-2 sm:px-4 sm:py-2 group-open/filter:border-ink group-open/filter:bg-soft {% if active_count > 0 %}border-ink{% else %}border-ink/20{% endif %}">
+            {{- filter.label -}}
+            {%- if active_count > 0 -%}
+              <span class="flex size-5 items-center justify-center rounded-full bg-pink text-[11px] font-semibold text-white">{{ active_count }}</span>
+            {%- endif -%}
+            {% render 'icon', name: 'chevron', class: 'size-4 transition duration-300 group-open/filter:rotate-180' %}
+          </summary>
+
+          <div class="dropdown-panel absolute inset-x-0 top-full z-20 mt-2 rounded-2xl border border-ink/10 bg-paper p-2 shadow-xl shadow-ink/10 md:right-auto md:left-0 md:w-72">
+            <div class="flex items-center justify-between px-3 pt-2 pb-1">
+              <p class="text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">{{ filter.label }}</p>
+              {%- if active_count > 0 -%}
+                <a href="{{ filter.url_to_remove }}" class="text-xs text-accent underline-offset-4 hover:underline">{{ 'collection.reset' | t }}</a>
+              {%- endif -%}
+            </div>
+
+            {%- case filter.type -%}
+              {%- when 'price_range' -%}
+                <div class="flex items-end gap-2 p-3">
+                  <label class="flex-1">
+                    <span class="mb-1 block text-xs text-ink/60">{{ 'collection.price_from' | t }}</span>
+                    <span class="relative block">
+                      <span class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-ink/50">{{ cart.currency.symbol }}</span>
+                      <input
+                        type="number"
+                        name="{{ filter.min_value.param_name }}"
+                        value="{% if filter.min_value.value %}{{ filter.min_value.value | divided_by: 100.0 | round: 2 }}{% endif %}"
+                        placeholder="0"
+                        min="0"
+                        step="any"
+                        class="input rounded-xl pl-7 pr-2"
+                      >
+                    </span>
+                  </label>
+                  <span class="pb-3 text-ink/40">–</span>
+                  <label class="flex-1">
+                    <span class="mb-1 block text-xs text-ink/60">{{ 'collection.price_to' | t }}</span>
+                    <span class="relative block">
+                      <span class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-ink/50">{{ cart.currency.symbol }}</span>
+                      <input
+                        type="number"
+                        name="{{ filter.max_value.param_name }}"
+                        value="{% if filter.max_value.value %}{{ filter.max_value.value | divided_by: 100.0 | round: 2 }}{% endif %}"
+                        placeholder="{{ filter.range_max | divided_by: 100.0 | ceil }}"
+                        min="0"
+                        step="any"
+                        class="input rounded-xl pl-7 pr-2"
+                      >
+                    </span>
+                  </label>
+                </div>
+                <div class="px-3 pb-3">
+                  <button type="submit" class="btn w-full py-2.5">{{ 'collection.apply' | t }}</button>
+                </div>
+              {%- else -%}
+                <ul class="max-h-72 overflow-y-auto pb-1">
+                  {%- for value in filter.values -%}
+                    {%- assign is_disabled = false -%}
+                    {%- if value.count == 0 and value.active == false -%}
+                      {%- assign is_disabled = true -%}
+                    {%- endif -%}
+                    <li>
+                      <label class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition {% if is_disabled %}cursor-not-allowed opacity-40{% else %}cursor-pointer hover:bg-soft{% endif %}">
+                        <span class="relative flex shrink-0">
+                          <input
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            class="peer size-5 cursor-pointer appearance-none rounded-md border border-ink/25 bg-paper transition checked:border-accent checked:bg-accent focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed"
+                            {% if value.active %}
+                              checked
+                            {% endif %}
+                            {% if is_disabled %}
+                              disabled
+                            {% endif %}
+                          >
+                          {% render 'icon', name: 'check', class: 'pointer-events-none absolute inset-0 m-auto size-3.5 scale-50 text-white opacity-0 transition duration-200 peer-checked:scale-100 peer-checked:opacity-100' %}
+                        </span>
+                        <span class="flex-1">{{ value.label }}</span>
+                        <span class="text-xs text-ink/40 tabular-nums">{{ value.count }}</span>
+                      </label>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+            {%- endcase -%}
+          </div>
+        </details>
+      {%- endfor -%}
+
+      {%- liquid
+        assign sort_label = ''
+        for option in collection.sort_options
+          if option.value == sort_by
+            assign sort_label = option.name
+          endif
+        endfor
+      -%}
+      <details class="group/sort ml-auto md:relative" data-dropdown>
+        <summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-ink/20 px-3 py-1.5 text-sm transition select-none hover:border-ink sm:gap-2 sm:px-4 sm:py-2 group-open/sort:border-ink group-open/sort:bg-soft">
+          <span class="sm:hidden">{{ 'collection.sort_by' | t }}</span>
+          <span class="hidden text-ink/50 sm:inline">{{ 'collection.sort_by' | t }}:</span>
+          <span class="hidden font-medium sm:inline">{{ sort_label }}</span>
+          {% render 'icon', name: 'chevron', class: 'size-4 transition duration-300 group-open/sort:rotate-180' %}
+        </summary>
+
+        <div class="dropdown-panel absolute inset-x-0 top-full z-20 mt-2 rounded-2xl border border-ink/10 bg-paper p-2 shadow-xl shadow-ink/10 md:right-0 md:left-auto md:w-64 md:origin-top-right">
+          <p class="px-3 pt-2 pb-1 text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">{{ 'collection.sort_by' | t }}</p>
+          <ul>
+            {%- for option in collection.sort_options -%}
+              <li>
+                <label class="flex cursor-pointer items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-sm transition hover:bg-soft has-checked:font-semibold has-checked:text-accent">
+                  <input
+                    type="radio"
+                    name="sort_by"
+                    value="{{ option.value }}"
+                    class="peer sr-only"
+                    data-auto-submit
+                    {% if option.value == sort_by %}
+                      checked
+                    {% endif %}
+                  >
+                  {{ option.name }}
+                  {% render 'icon', name: 'check', class: 'size-4 scale-50 opacity-0 transition peer-checked:scale-100 peer-checked:opacity-100' %}
+                </label>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </details>
+    </form>
+
+    <div class="flex min-h-14 flex-wrap items-center gap-2 py-4 text-sm">
+      <span class="mr-2 text-ink/60">{{ 'collection.product_count' | t: count: collection.products_count }}</span>
+      {%- assign has_active_filters = false -%}
+      {%- for filter in collection.filters -%}
+        {%- for value in filter.active_values -%}
+          {%- assign has_active_filters = true -%}
+          <a href="{{ value.url_to_remove }}" class="fade-in group inline-flex items-center gap-1.5 rounded-full bg-soft py-1.5 pr-2.5 pl-3.5 transition hover:bg-accent hover:text-white">
+            {{- value.label -}}
+            {% render 'icon', name: 'close', class: 'size-3.5 transition group-hover:rotate-90' %}
+          </a>
+        {%- endfor -%}
+        {%- if filter.type == 'price_range' -%}
+          {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+            {%- assign has_active_filters = true -%}
+            <a href="{{ filter.url_to_remove }}" class="fade-in group inline-flex items-center gap-1.5 rounded-full bg-soft py-1.5 pr-2.5 pl-3.5 transition hover:bg-accent hover:text-white">
+              {{- filter.min_value.value | default: 0 | money }} – {{ filter.max_value.value | default: filter.range_max | money -}}
+              {% render 'icon', name: 'close', class: 'size-3.5 transition group-hover:rotate-90' %}
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if has_active_filters -%}
+        <a href="{{ collection.url }}?sort_by={{ sort_by }}" class="ml-1 text-ink/60 underline underline-offset-4 hover:text-pink">{{ 'collection.clear_all' | t }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="mt-4 grid {% if section.settings.mobile_columns == '1' %}grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-y-10{% else %}grid-cols-2 gap-y-10{% endif %} gap-x-4 transition-opacity duration-300 data-loading:pointer-events-none data-loading:opacity-40 md:gap-x-6 lg:grid-cols-4" data-product-grid>
+      {%- for product in collection.products -%}
+        <div class="fade-up" style="animation-delay: {{ forloop.index0 | modulo: 8 | times: 60 }}ms">
+          {% render 'product-card', product: product, show_quick_add: true %}
+        </div>
+      {%- else -%}
+        <p class="col-span-full py-20 text-center text-ink/60">{{ 'collection.empty' | t }}</p>
+      {%- endfor -%}
+    </div>
+
+    {% render 'pagination', paginate: paginate %}
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Products per row on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    }
+  ]
+}
+{% endschema %}

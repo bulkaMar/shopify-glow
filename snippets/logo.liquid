@@ -1,0 +1,18 @@
+{%- assign gradient_id = 'logo-gradient-' | append: id -%}
+
+<span class="inline-flex items-center gap-2 {{ class }}">
+  <svg viewBox="0 0 32 32" class="size-[1.15em] shrink-0" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="{{ gradient_id }}" x1="8" y1="4" x2="26" y2="30" gradientUnits="userSpaceOnUse">
+        <stop style="stop-color: var(--color-accent-setting)"/>
+        <stop offset="1" style="stop-color: var(--color-pink-setting)"/>
+      </linearGradient>
+    </defs>
+    <path d="M16 2.5S5.5 13.9 5.5 20.6a10.5 10.5 0 0 0 21 0C26.5 13.9 16 2.5 16 2.5z" fill="url(#{{ gradient_id }})"/>
+    <path d="M16 14.6l1.3 3.9 3.9 1.3-3.9 1.3-1.3 3.9-1.3-3.9-3.9-1.3 3.9-1.3z" fill="#fff"/>
+  </svg>
+  <span class="font-heading leading-none tracking-tight lowercase">
+    {{- shop.name -}}
+    <span class="text-pink">.</span>
+  </span>
+</span>

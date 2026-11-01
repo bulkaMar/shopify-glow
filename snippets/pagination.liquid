@@ -1,0 +1,21 @@
+{%- if paginate.pages > 1 -%}
+  <nav class="mt-14 flex items-center justify-center gap-1 text-sm" aria-label="{{ 'general.pagination' | t }}">
+    {%- if paginate.previous -%}
+      <a href="{{ paginate.previous.url }}" class="rounded-full px-4 py-2 hover:bg-soft">← {{ 'general.previous' | t }}</a>
+    {%- endif -%}
+
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+        <a href="{{ part.url }}" class="flex size-10 items-center justify-center rounded-full hover:bg-soft">{{ part.title }}</a>
+      {%- elsif part.title == paginate.current_page -%}
+        <span class="flex size-10 items-center justify-center rounded-full bg-ink text-paper" aria-current="page">{{ part.title }}</span>
+      {%- else -%}
+        <span class="px-2">{{ part.title }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if paginate.next -%}
+      <a href="{{ paginate.next.url }}" class="rounded-full px-4 py-2 hover:bg-soft">{{ 'general.next' | t }} →</a>
+    {%- endif -%}
+  </nav>
+{%- endif -%}

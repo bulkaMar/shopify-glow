@@ -1,0 +1,8 @@
+{%- liquid
+  assign words = article.content | replace: '<', ' <' | strip_html | strip_newlines | split: ' ' | size
+  assign minutes = words | divided_by: 200.0 | ceil
+  if minutes < 1
+    assign minutes = 1
+  endif
+  echo 'blog.reading_time' | t: count: minutes
+-%}

@@ -1,0 +1,170 @@
+<section class="relative isolate overflow-hidden bg-gradient-to-b from-soft to-paper py-14 md:py-24">
+  <div class="blob pointer-events-none absolute -top-24 -right-24 -z-10 size-96 rounded-full bg-blush/70 blur-3xl"></div>
+
+  <div class="page-width grid gap-10 lg:grid-cols-[2fr_3fr] lg:gap-16">
+    <div class="fade-up">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow mb-3">{% render 'tr', text: section.settings.eyebrow %}</p>
+      {%- endif -%}
+      <h1 class="text-5xl leading-[1.05] md:text-6xl">{%- assign contact_heading = section.settings.heading | default: page.title -%}{% render 'tr', text: contact_heading %}</h1>
+      {%- if section.settings.text != blank -%}
+        <div class="rte mt-5 text-lg">{% render 'tr', text: section.settings.text %}</div>
+      {%- endif -%}
+
+      <ul class="mt-10 grid gap-4">
+        {%- if section.settings.reply_time != blank -%}
+          <li class="flex items-center gap-4 rounded-2xl bg-paper/80 p-4 shadow-sm backdrop-blur">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-soft text-accent">
+              {% render 'icon', name: 'mail' %}
+            </span>
+            <span>
+              <span class="block text-xs text-ink/50">{{ 'contact.reply_time' | t }}</span>
+              <span class="font-medium">{% render 'tr', text: section.settings.reply_time %}</span>
+            </span>
+          </li>
+        {%- endif -%}
+        {%- assign contact_email = section.settings.email -%}
+        {%- if contact_email != blank -%}
+          <li>
+            <a href="mailto:{{ contact_email }}" class="group flex items-center gap-4 rounded-2xl bg-paper/80 p-4 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md">
+              <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-soft text-accent transition group-hover:bg-accent group-hover:text-white">
+                {% render 'icon', name: 'mail' %}
+              </span>
+              <span>
+                <span class="block text-xs text-ink/50">{{ 'contact.email' | t }}</span>
+                <span class="font-medium">{{ contact_email }}</span>
+              </span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if section.settings.hours != blank -%}
+          <li class="flex items-center gap-4 rounded-2xl bg-paper/80 p-4 shadow-sm backdrop-blur">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-blush text-pink">
+              {% render 'icon', name: 'clock' %}
+            </span>
+            <span>
+              <span class="block text-xs text-ink/50">{{ 'contact.hours' | t }}</span>
+              <span class="font-medium">{% render 'tr', text: section.settings.hours %}</span>
+            </span>
+          </li>
+        {%- endif -%}
+      </ul>
+
+      {%- if settings.social_instagram_link != blank or settings.social_tiktok_link != blank -%}
+        <div class="mt-8 flex gap-3">
+          {%- if settings.social_instagram_link != blank -%}
+            <a href="{{ settings.social_instagram_link }}" class="flex size-11 items-center justify-center rounded-full border border-ink/15 transition hover:border-accent hover:bg-accent hover:text-white" aria-label="Instagram">
+              {% render 'icon', name: 'instagram' %}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_tiktok_link != blank -%}
+            <a href="{{ settings.social_tiktok_link }}" class="flex size-11 items-center justify-center rounded-full border border-ink/15 transition hover:border-accent hover:bg-accent hover:text-white" aria-label="TikTok">
+              {% render 'icon', name: 'tiktok' %}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="fade-up rounded-[2rem] bg-paper p-6 shadow-2xl shadow-ink/5 [animation-delay:150ms] md:p-10">
+      {%- form 'contact', id: 'ContactForm', class: 'grid gap-5' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="py-10 text-center" role="status">
+            <span class="mx-auto flex size-16 items-center justify-center rounded-full bg-blush text-pink">
+              {% render 'icon', name: 'heart', class: 'size-8' %}
+            </span>
+            <p class="mt-6 font-heading text-2xl">{{ 'reviews.success_title' | t }}</p>
+            <p class="mt-2 text-ink/70">{{ 'contact.success' | t }}</p>
+          </div>
+        {%- else -%}
+          {%- if form.errors -%}
+            <div class="rounded-2xl bg-blush p-4 text-sm" role="alert">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium">{{ 'contact.name' | t }}</span>
+              <input type="text" name="contact[name]" class="input rounded-xl" autocomplete="name" value="{{ form.name }}">
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium">{{ 'contact.email' | t }} *</span>
+              <input type="email" name="contact[email]" class="input rounded-xl" autocomplete="email" value="{{ form.email }}" required>
+            </label>
+          </div>
+
+          <div>
+            <p class="mb-2 text-sm font-medium">{{ 'contact.topic' | t }}</p>
+            <div class="flex flex-wrap gap-2">
+              {%- assign topics = 'contact.topics' | t | split: ',' -%}
+              {%- for topic in topics -%}
+                <label class="cursor-pointer">
+                  <input type="radio" name="contact[Topic]" value="{{ topic | strip }}" class="peer sr-only" {% if forloop.first %}checked{% endif %}>
+                  <span class="block rounded-full border border-ink/15 px-4 py-2 text-sm transition peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-accent/30 hover:border-ink/40">
+                    {{- topic | strip -}}
+                  </span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          <label class="block">
+            <span class="mb-1.5 block text-sm font-medium">{{ 'contact.message' | t }} *</span>
+            <textarea name="contact[body]" rows="5" class="input resize-y rounded-2xl" required>{{ form.body }}</textarea>
+          </label>
+
+          <button type="submit" class="btn w-full sm:w-auto sm:justify-self-start">
+            {{- 'contact.send' | t }}
+            {% render 'icon', name: 'arrow', class: 'size-4' -%}
+          </button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact page",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small text above heading",
+      "default": "We're here to help"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get in touch"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Questions about your order or not sure which product suits your skin? Send us a message — we usually reply within 24 hours.</p>"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "info": "Shown only when filled in"
+    },
+    {
+      "type": "text",
+      "id": "reply_time",
+      "label": "Reply time",
+      "default": "Within 24 hours"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Opening hours",
+      "default": "Mon–Fri, 9:00–18:00"
+    }
+  ]
+}
+{% endschema %}

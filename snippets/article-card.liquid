@@ -1,0 +1,41 @@
+<article class="group flex flex-col">
+  <a href="{{ article.url }}" class="relative block aspect-[4/3] overflow-hidden rounded-3xl bg-soft">
+    {%- if article.image -%}
+      {{
+        article.image
+        | image_url: width: 800
+        | image_tag:
+          class: 'h-full w-full object-cover transition duration-700 group-hover:scale-105',
+          widths: '400, 600, 800',
+          sizes: '(min-width: 768px) 33vw, 100vw',
+          loading: 'lazy'
+      }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'h-full w-full' }}
+    {%- endif -%}
+
+    {%- if article.tags.size > 0 -%}
+      <span class="absolute top-4 left-4 rounded-full bg-paper/90 px-3 py-1 text-xs font-semibold capitalize backdrop-blur">
+        {{- article.tags.first -}}
+      </span>
+    {%- endif -%}
+  </a>
+
+  <p class="mt-5 flex items-center gap-2 text-xs text-ink/50">
+    {{ article.published_at | time_tag: format: 'date' }}
+    <span aria-hidden="true">·</span>
+    {% render 'reading-time', article: article %}
+  </p>
+  <h3 class="mt-2 text-xl leading-snug">
+    <a href="{{ article.url }}" class="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 group-hover:bg-[length:100%_1px]">
+      {{- article.title -}}
+    </a>
+  </h3>
+  <p class="mt-2 text-sm leading-relaxed text-ink/70">
+    {{- article.excerpt_or_content | strip_html | truncatewords: 20 -}}
+  </p>
+  <a href="{{ article.url }}" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+    {{- 'blog.read_more' | t }}
+    {% render 'icon', name: 'arrow', class: 'size-4 transition group-hover:translate-x-1' -%}
+  </a>
+</article>

@@ -1,0 +1,41 @@
+{%- if product.has_only_default_variant -%}
+  <input type="hidden" name="id" value="{{ current_variant.id }}">
+{%- else -%}
+  <fieldset class="mb-6">
+    <legend class="mb-3 text-sm font-medium">{{ product.options | join: ' / ' }}</legend>
+    <div class="flex flex-wrap gap-2">
+      {%- for variant in product.variants -%}
+        {%- liquid
+          assign variant_low_stock = ''
+          if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny' and variant.inventory_quantity > 0 and variant.inventory_quantity <= low_stock_threshold
+            assign variant_low_stock = 'products.low_stock' | t: count: variant.inventory_quantity
+          endif
+        -%}
+        <label class="cursor-pointer">
+          <input
+            type="radio"
+            name="id"
+            value="{{ variant.id }}"
+            class="peer sr-only"
+            data-variant-input
+            data-price="{{ variant.price | money | escape }}"
+            data-compare-price="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+            data-available="{{ variant.available }}"
+            data-max="{% if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny' %}{{ variant.inventory_quantity }}{% endif %}"
+            data-low-stock="{{ variant_low_stock | escape }}"
+            {% if variant.featured_media %}
+              data-image="{{ variant.featured_media | image_url: width: 1400 }}"
+            {% endif %}
+            {% if variant == current_variant %}
+              checked
+            {% endif %}
+          >
+          <span class="block rounded-full border border-ink/20 px-5 py-2 text-sm transition peer-checked:border-ink peer-checked:bg-ink peer-checked:text-paper peer-focus-visible:ring-2 peer-focus-visible:ring-accent">
+            {{- variant.title -}}
+            {%- unless variant.available %} · {{ 'products.sold_out' | t }}{% endunless -%}
+          </span>
+        </label>
+      {%- endfor -%}
+    </div>
+  </fieldset>
+{%- endif -%}

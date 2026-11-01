@@ -1,0 +1,149 @@
+<div class="fixed inset-x-0 top-0 z-50 h-1 origin-left scale-x-0 bg-gradient-to-r from-accent to-pink" data-reading-progress></div>
+
+<article>
+  <header class="relative isolate overflow-hidden bg-gradient-to-br from-soft via-paper to-blush/50 py-10 md:py-16">
+    <div class="blob pointer-events-none absolute -right-24 -bottom-32 -z-10 size-96 rounded-full bg-blush/70 blur-3xl"></div>
+
+    <div class="page-width grid items-center gap-10 md:grid-cols-2 md:gap-16">
+      <div class="fade-up aspect-[4/5] overflow-hidden rounded-[2rem] bg-soft shadow-2xl shadow-ink/10 md:order-first">
+        {%- if article.image -%}
+          {{
+            article.image
+            | image_url: width: 1400
+            | image_tag:
+              class: 'h-full w-full object-cover',
+              widths: '600, 900, 1200, 1400',
+              sizes: '(min-width: 768px) 50vw, 100vw',
+              loading: 'eager',
+              fetchpriority: 'high'
+          }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'h-full w-full' }}
+        {%- endif -%}
+      </div>
+
+      <div>
+        <a href="{{ blog.url }}" class="group inline-flex items-center gap-2 rounded-full border border-ink/10 bg-paper/80 px-4 py-1.5 text-sm backdrop-blur transition hover:border-ink">
+          {% render 'icon', name: 'arrow', class: 'size-4 rotate-180 transition group-hover:-translate-x-1' %}
+          {{ 'blog.back' | t }}
+        </a>
+
+        {%- if article.tags.size > 0 -%}
+          <p class="eyebrow fade-up mt-8 capitalize [animation-delay:100ms]">{{ article.tags.first }}</p>
+        {%- endif -%}
+        <h1 class="fade-up mt-3 text-4xl leading-[1.1] [animation-delay:150ms] md:text-5xl lg:text-6xl">{{ article.title }}</h1>
+
+        {%- if article.excerpt != blank -%}
+          <p class="fade-up mt-6 text-lg leading-relaxed text-ink/70 [animation-delay:200ms]">{{ article.excerpt | strip_html }}</p>
+        {%- endif -%}
+
+        <div class="fade-up mt-8 flex flex-wrap items-center gap-3 text-sm [animation-delay:250ms]">
+          <span class="inline-flex items-center gap-2 rounded-full bg-paper/80 px-4 py-2 backdrop-blur">
+            {% render 'icon', name: 'clock', class: 'size-4 text-accent' %}
+            {% render 'reading-time', article: article %}
+          </span>
+          <span class="text-ink/60">{{ article.published_at | time_tag: format: 'date' }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-width">
+    <div class="mx-auto mt-12 grid max-w-6xl gap-10 md:mt-16 lg:grid-cols-[15rem_1fr] lg:gap-16">
+      <aside class="lg:sticky lg:top-28 lg:self-start" data-toc-wrapper hidden>
+        <nav class="rounded-3xl bg-soft/60 p-6 lg:bg-transparent lg:p-0" aria-label="{{ 'blog.contents' | t }}">
+          <p class="text-xs font-semibold tracking-[0.15em] text-ink/50 uppercase">{{ 'blog.contents' | t }}</p>
+          <ol class="mt-4 border-l border-ink/10" data-toc></ol>
+        </nav>
+      </aside>
+
+      <div class="min-w-0">
+        <div class="rte rte-article max-w-2xl" data-article-content>{{ article.content }}</div>
+
+        <footer class="mt-14 flex max-w-2xl flex-col gap-6 border-t border-ink/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          {%- if article.tags.size > 0 -%}
+            <ul class="flex flex-wrap gap-2">
+              {%- for tag in article.tags -%}
+                <li>
+                  <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="block rounded-full bg-blush px-4 py-1.5 text-sm capitalize transition hover:bg-pink hover:text-white">{{ tag }}</a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          {%- assign share_url = shop.url | append: article.url | url_encode -%}
+          {%- assign share_title = article.title | url_encode -%}
+          <div class="flex items-center gap-2">
+            <span class="mr-1 text-sm text-ink/60">{{ 'blog.share' | t }}</span>
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}"
+              target="_blank"
+              rel="noopener"
+              class="flex size-10 items-center justify-center rounded-full border border-ink/15 text-sm font-semibold transition hover:border-accent hover:bg-accent hover:text-white"
+              aria-label="Facebook"
+            >
+              f
+            </a>
+            <a
+              href="https://pinterest.com/pin/create/button/?url={{ share_url }}&description={{ share_title }}"
+              target="_blank"
+              rel="noopener"
+              class="flex size-10 items-center justify-center rounded-full border border-ink/15 text-sm font-semibold transition hover:border-pink hover:bg-pink hover:text-white"
+              aria-label="Pinterest"
+            >
+              P
+            </a>
+            <button
+              type="button"
+              class="flex h-10 cursor-pointer items-center gap-2 rounded-full border border-ink/15 px-4 text-sm transition hover:border-ink"
+              data-copy-link="{{ shop.url }}{{ article.url }}"
+              data-copied-text="{{ 'blog.copied' | t | escape }}"
+            >
+              {% render 'icon', name: 'check', class: 'hidden size-4 text-accent' %}
+              <span>{{ 'blog.copy_link' | t }}</span>
+            </button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</article>
+
+{%- assign more_count = 0 -%}
+{%- capture more_articles -%}
+  {%- for item in blog.articles limit: 4 -%}
+    {%- if item.id == article.id or more_count >= 3 -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- assign more_count = more_count | plus: 1 -%}
+    <div style="--reveal-delay: {{ more_count | times: 100 }}ms" data-reveal>
+      {% render 'article-card', article: item %}
+    </div>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if more_count > 0 -%}
+  <section class="mt-20 bg-soft/50 py-14 md:py-20">
+    <div class="page-width">
+      <div class="mb-10 flex items-end justify-between gap-4" data-reveal>
+        <h2 class="text-3xl md:text-4xl">{{ 'blog.more' | t }}</h2>
+        <a href="{{ blog.url }}" class="inline-flex items-center gap-1 text-sm font-semibold text-accent">
+          {{- 'general.view_all' | t }}
+          {% render 'icon', name: 'arrow', class: 'size-4' -%}
+        </a>
+      </div>
+      <div class="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">{{ more_articles }}</div>
+    </div>
+  </section>
+{%- else -%}
+  <div class="pb-14 md:pb-20"></div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Article",
+  "enabled_on": {
+    "templates": ["article"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,12 @@
+<div class="flex flex-wrap items-baseline gap-2 {{ class }}">
+  {%- if product.price_varies -%}
+    {%- assign min_price = product.price_min | money -%}
+    <span>{{ 'products.from_price' | t: price: min_price }}</span>
+  {%- else -%}
+    <span>{{ product.price | money }}</span>
+  {%- endif -%}
+
+  {%- if product.compare_at_price > product.price -%}
+    <s class="text-ink/50">{{ product.compare_at_price | money }}</s>
+  {%- endif -%}
+</div>
